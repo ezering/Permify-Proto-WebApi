@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using Permify_Proto_WebApi.interfaces;
 using Permify_Proto_WebApi.Models;
@@ -13,7 +14,7 @@ namespace Permify_Proto_WebApi.Repositories
         private readonly IMongoCollection<Proto> _protoDataCollection;
         public MongoDbProtoRepository(IMongoClient mongoClient)
         {
-            var database = mongoClient.GetDatabase(_databaseName);
+            IMongoDatabase database = mongoClient.GetDatabase(_databaseName);
             _protoDataCollection = database.GetCollection<Proto>(_collectionName);
         }
 
@@ -36,7 +37,7 @@ namespace Permify_Proto_WebApi.Repositories
 
         public IEnumerable<Proto> GetAllProtos()
         {
-            return _protoDataCollection.Find(proto => true).ToList();
+            return _protoDataCollection.Find(new BsonDocument()).ToList();
         }
 
         public Proto GetProtoById(Guid id)
