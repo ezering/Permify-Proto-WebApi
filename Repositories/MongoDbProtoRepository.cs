@@ -12,6 +12,7 @@ namespace Permify_Proto_WebApi.Repositories
         private const string _databaseName = "proto";
         private const string _collectionName = "proto_data";
         private readonly IMongoCollection<Proto> _protoDataCollection;
+        private readonly FilterDefinitionBuilder<Proto> _filterBuilder = Builders<Proto>.Filter;
         public MongoDbProtoRepository(IMongoClient mongoClient)
         {
             IMongoDatabase database = mongoClient.GetDatabase(_databaseName);
@@ -30,11 +31,6 @@ namespace Permify_Proto_WebApi.Repositories
             return protos;
         }
 
-        public void DeleteProto(Guid id)
-        {
-            _protoDataCollection.DeleteOne(proto => proto.Id == id);
-        }
-
         public IEnumerable<Proto> GetAllProtos()
         {
             return _protoDataCollection.Find(new BsonDocument()).ToList();
@@ -42,13 +38,20 @@ namespace Permify_Proto_WebApi.Repositories
 
         public Proto GetProtoById(Guid id)
         {
-            return _protoDataCollection.Find(proto => proto.Id == id).FirstOrDefault();
-
+            var filter = _filterBuilder.Eq(proto => proto.Id, id);
+            return _protoDataCollection.Find(filter).FirstOrDefault();
         }
 
-        public void UpdateProto(Guid id)
+        public void UpdateProto(Proto proto)
         {
-            _protoDataCollection.ReplaceOne(proto => proto.Id == id, GetProtoById(id));
+            var filter = _filterBuilder.Eq(proto => proto.Id, proto.Id);
+            _protoDataCollection.ReplaceOne(filter, proto);
+        }
+
+        public void DeleteProto(Guid id)
+        {
+            var filter = _filterBuilder.Eq(proto => proto.Id, id);
+            _protoDataCollection.DeleteOne(filter);
         }
     }
 }

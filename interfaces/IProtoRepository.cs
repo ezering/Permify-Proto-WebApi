@@ -14,7 +14,7 @@ namespace Permify_Proto_WebApi.interfaces
 
         List<Proto> AddProtos(List<Proto> protos);
 
-        void UpdateProto(Guid id);
+        void UpdateProto(Proto proto);
 
         void DeleteProto(Guid id);
     }
