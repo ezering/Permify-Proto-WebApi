@@ -33,7 +33,7 @@ namespace Permify.Proto.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            BsonSerializer.RegisterSerializer(new GuidSerializer(BsonType.String)); // every time there is a GUID it should be a string in the database
+            // BsonSerializer.RegisterSerializer(new GuidSerializer(BsonType.String)); // every time there is a GUID it should be a string in the database
             BsonSerializer.RegisterSerializer(new DateTimeOffsetSerializer(BsonType.String)); // every time there is a DateTime it should be a string in the database
 
             services.AddSingleton<IMongoClient>(

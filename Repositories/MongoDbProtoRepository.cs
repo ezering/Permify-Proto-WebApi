@@ -7,7 +7,7 @@ using Permify_Proto_WebApi.Models;
 
 namespace Permify_Proto_WebApi.Repositories
 {
-    public class MongoDbProtoRepository: IProtoRepository
+    public class MongoDbProtoRepository : IProtoRepository
     {
         private const string _databaseName = "proto";
         private const string _collectionName = "proto_data";
@@ -43,6 +43,7 @@ namespace Permify_Proto_WebApi.Repositories
         public Proto GetProtoById(Guid id)
         {
             return _protoDataCollection.Find(proto => proto.Id == id).FirstOrDefault();
+
         }
 
         public void UpdateProto(Guid id)
