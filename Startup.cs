@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HealthChecks.MongoDb;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -35,13 +36,12 @@ namespace Permify.Proto.WebApi
         {
             // BsonSerializer.RegisterSerializer(new GuidSerializer(BsonType.String)); // every time there is a GUID it should be a string in the database
             BsonSerializer.RegisterSerializer(new DateTimeOffsetSerializer(BsonType.String)); // every time there is a DateTime it should be a string in the database
+            var mongoDbSettings = Configuration.GetSection(nameof(MongoDbSettings)).Get<MongoDbSettings>();
 
             services.AddSingleton<IMongoClient>(
                 serviceProvider =>
                 {
-                    var settings = Configuration.GetSection(nameof(MongoDbSettings)).Get<MongoDbSettings>();
-                    Console.WriteLine(settings.ConnectionString);
-                    return new MongoClient(settings.ConnectionString);
+                    return new MongoClient(mongoDbSettings.ConnectionString);
                 }
             );
             services.AddSingleton<IProtoRepository, MongoDbProtoRepository>();
@@ -53,6 +53,9 @@ namespace Permify.Proto.WebApi
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Permify.Proto.WebApi", Version = "v1" });
             });
+
+            services.AddHealthChecks()
+                .AddMongoDb(mongoDbSettings.ConnectionString, name: "MongoDb", timeout: TimeSpan.FromSeconds(5));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -65,7 +68,11 @@ namespace Permify.Proto.WebApi
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Permify.Proto.WebApi v1"));
             }
 
-            app.UseHttpsRedirection();
+            if (env.IsDevelopment())
+            {
+                app.UseHttpsRedirection();
+            }
+
 
             app.UseRouting();
 
@@ -74,6 +81,7 @@ namespace Permify.Proto.WebApi
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHealthChecks("/health");
             });
         }
     }
