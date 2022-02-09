@@ -11,7 +11,7 @@ namespace Permify_Proto_WebApi
             {
                 Id = proto.Id,
                 FormType = proto.FormType,
-                GeoData = proto.GeoData
+                GeoJson = proto.GeoJson
             };
         }
     }

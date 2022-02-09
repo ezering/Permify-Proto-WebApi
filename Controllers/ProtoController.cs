@@ -35,7 +35,7 @@ namespace Permify_Proto_WebApi.Controllers
             {
                 Id = Guid.NewGuid(),
                 FormType = protoDto.FormType,
-                GeoData = protoDto.GeoJson
+                GeoJson = protoDto.GeoJson
 
             };
 
@@ -53,7 +53,7 @@ namespace Permify_Proto_WebApi.Controllers
                 {
                     Id = Guid.NewGuid(),
                     FormType = protoDto.FormType,
-                    GeoData = protoDto.GeoJson
+                    GeoJson = protoDto.GeoJson
                 };
                 protos.Add(proto);
             }
@@ -83,7 +83,7 @@ namespace Permify_Proto_WebApi.Controllers
                 return NotFound();
             }
             proto.FormType = protoDto.FormType;
-            proto.GeoData = protoDto.GeoJson;
+            proto.GeoJson = protoDto.GeoJson;
             await _protoRepository.UpdateProtoAsync(proto);
             return proto.ToDto();
         }

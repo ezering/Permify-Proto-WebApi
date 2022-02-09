@@ -12,6 +12,6 @@ namespace Permify_Proto_WebApi.Models
         public string FormType { get; set; }
 
         [BsonElement("geodata")]
-        public ShapeGeoData GeoData { get; set; }
+        public ShapeGeoData GeoJson { get; set; }
     }
 }

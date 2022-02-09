@@ -8,6 +8,6 @@ namespace Permify_Proto_WebApi.Dtos
         public Guid Id { get; set; }
         public string FormType { get; set; }
 
-        public ShapeGeoData GeoData { get; set; }
+        public ShapeGeoData GeoJson { get; set; }
     }
 }
