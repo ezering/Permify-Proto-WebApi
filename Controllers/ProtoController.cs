@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using Permify_Proto_WebApi.Dtos;
@@ -21,22 +22,22 @@ namespace Permify_Proto_WebApi.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<ProtoDto> Get()
+        public async Task<IEnumerable<ProtoDto>> Get()
         {
-            return _protoRepository.GetAllProtos().Select(
+            return (await _protoRepository.GetAllProtosAsync()).Select(
                 proto => proto.ToDto()
             );
         }
 
         [HttpGet("{id}")]
-        public ActionResult<ProtoDto> GetProto(Guid id)
+        public async Task<ActionResult<ProtoDto>> GetProto(Guid id)
         {
-            var proto = _protoRepository.GetProtoById(id);
+            var proto = await _protoRepository.GetProtoByIdAsync(id);
             if (proto == null)
             {
                 return NotFound();
             }
-            return _protoRepository.GetProtoById(id).ToDto();
+            return (await _protoRepository.GetProtoByIdAsync(id)).ToDto();
         }
 
         [HttpPost("add-proto")]
@@ -50,7 +51,7 @@ namespace Permify_Proto_WebApi.Controllers
 
             };
 
-            _protoRepository.AddProto(proto);
+            _protoRepository.AddProtoAsync(proto);
             return CreatedAtAction(nameof(GetProto), new { id = proto.Id }, proto.ToDto());
         }
 
@@ -68,33 +69,33 @@ namespace Permify_Proto_WebApi.Controllers
                 };
                 protos.Add(proto);
             }
-            _protoRepository.AddProtos(protos);
+            _protoRepository.AddProtosAsync(protos);
             return CreatedAtAction(nameof(GetProto), new { id = protos.First().Id }, protos.Select(proto => proto.ToDto()));
         }
 
         [HttpPut("{id}")]
-        public ActionResult<ProtoDto> Put(Guid id, UpdateProtoDto protoDto)
+        public async Task<ActionResult<ProtoDto>> Put(Guid id, UpdateProtoDto protoDto)
         {
-            var proto = _protoRepository.GetProtoById(id);
+            var proto = await _protoRepository.GetProtoByIdAsync(id);
             if (proto == null)
             {
                 return NotFound();
             }
             proto.FormType = protoDto.FormType;
             proto.GeoData = protoDto.GeoJson;
-            _protoRepository.UpdateProto(proto);
+            await _protoRepository.UpdateProtoAsync(proto);
             return proto.ToDto();
         }
 
         [HttpDelete("{id}")]
-        public ActionResult<ProtoDto> Delete(Guid id)
+        public async Task<ActionResult<ProtoDto>> Delete(Guid id)
         {
-            var proto = _protoRepository.GetProtoById(id);
+            var proto = await _protoRepository.GetProtoByIdAsync(id);
             if (proto == null)
             {
                 return NotFound();
             }
-            _protoRepository.DeleteProto(id);
+            await _protoRepository.DeleteProtoAsync(id);
             return proto.ToDto();
         }
     }

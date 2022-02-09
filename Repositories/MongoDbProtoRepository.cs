@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Permify_Proto_WebApi.interfaces;
@@ -19,39 +20,39 @@ namespace Permify_Proto_WebApi.Repositories
             _protoDataCollection = database.GetCollection<Proto>(_collectionName);
         }
 
-        public Proto AddProto(Proto proto)
+        public async Task<Proto> AddProtoAsync(Proto proto)
         {
-            _protoDataCollection.InsertOne(proto);
+            await _protoDataCollection.InsertOneAsync(proto);
             return proto;
         }
 
-        public List<Proto> AddProtos(List<Proto> protos)
+        public async Task<List<Proto>> AddProtosAsync(List<Proto> protos)
         {
-            _protoDataCollection.InsertMany(protos);
+            await _protoDataCollection.InsertManyAsync(protos);
             return protos;
         }
 
-        public IEnumerable<Proto> GetAllProtos()
+        public async Task<IEnumerable<Proto>> GetAllProtosAsync()
         {
-            return _protoDataCollection.Find(new BsonDocument()).ToList();
+            return await _protoDataCollection.Find(new BsonDocument()).ToListAsync();
         }
 
-        public Proto GetProtoById(Guid id)
+        public async Task<Proto> GetProtoByIdAsync(Guid id)
         {
             var filter = _filterBuilder.Eq(proto => proto.Id, id);
-            return _protoDataCollection.Find(filter).FirstOrDefault();
+            return await _protoDataCollection.Find(filter).FirstOrDefaultAsync();
         }
 
-        public void UpdateProto(Proto proto)
+        public async Task UpdateProtoAsync(Proto proto)
         {
             var filter = _filterBuilder.Eq(proto => proto.Id, proto.Id);
-            _protoDataCollection.ReplaceOne(filter, proto);
+            await _protoDataCollection.ReplaceOneAsync(filter, proto);
         }
 
-        public void DeleteProto(Guid id)
+        public async Task DeleteProtoAsync(Guid id)
         {
             var filter = _filterBuilder.Eq(proto => proto.Id, id);
-            _protoDataCollection.DeleteOne(filter);
+            await _protoDataCollection.DeleteOneAsync(filter);
         }
     }
 }

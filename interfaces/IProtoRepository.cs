@@ -1,21 +1,22 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Permify_Proto_WebApi.Models;
 
 namespace Permify_Proto_WebApi.interfaces
 {
     public interface IProtoRepository
     {
-        IEnumerable<Proto> GetAllProtos();
+        Task<IEnumerable<Proto>> GetAllProtosAsync();
 
-        Proto GetProtoById(Guid id);
+        Task<Proto> GetProtoByIdAsync(Guid id);
 
-        Proto AddProto(Proto proto);
+        Task<Proto> AddProtoAsync(Proto proto);
 
-        List<Proto> AddProtos(List<Proto> protos);
+        Task<List<Proto>> AddProtosAsync(List<Proto> protos);
 
-        void UpdateProto(Proto proto);
+        Task UpdateProtoAsync(Proto proto);
 
-        void DeleteProto(Guid id);
+        Task DeleteProtoAsync(Guid id);
     }
 }
