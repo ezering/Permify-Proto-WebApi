@@ -7,7 +7,6 @@ using MongoDB.Driver;
 using Permify_Proto_WebApi.Dtos;
 using Permify_Proto_WebApi.interfaces;
 using Permify_Proto_WebApi.Models;
-using Permify_Proto_WebApi.Repositories;
 
 namespace Permify_Proto_WebApi.Controllers
 {
@@ -30,7 +29,7 @@ namespace Permify_Proto_WebApi.Controllers
         }
 
         [HttpPost("add-proto")]
-        public ActionResult<ProtoDto> Post(CreateProtoDto protoDto)
+        public async Task<ActionResult<ProtoDto>> Post(CreateProtoDto protoDto)
         {
             Proto proto = new()
             {
@@ -40,12 +39,12 @@ namespace Permify_Proto_WebApi.Controllers
 
             };
 
-            _protoRepository.AddProtoAsync(proto);
+            await _protoRepository.AddProtoAsync(proto);
             return CreatedAtAction(nameof(GetProto), new { id = proto.Id }, proto.ToDto());
         }
 
         [HttpPost("add-protos")]
-        public ActionResult<List<ProtoDto>> Post(List<CreateProtoDto> protoDtos)
+        public async Task<ActionResult<List<ProtoDto>>> Post(List<CreateProtoDto> protoDtos)
         {
             List<Proto> protos = new();
             foreach (var protoDto in protoDtos)
@@ -58,7 +57,7 @@ namespace Permify_Proto_WebApi.Controllers
                 };
                 protos.Add(proto);
             }
-            _protoRepository.AddProtosAsync(protos);
+            await _protoRepository.AddProtosAsync(protos);
             return CreatedAtAction(nameof(GetProto), new { id = protos.First().Id }, protos.Select(proto => proto.ToDto()));
         }
 
