@@ -34,9 +34,15 @@ namespace Permify.Proto.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<IConfiguration>(Configuration);
             // BsonSerializer.RegisterSerializer(new GuidSerializer(BsonType.String)); // every time there is a GUID it should be a string in the database
             BsonSerializer.RegisterSerializer(new DateTimeOffsetSerializer(BsonType.String)); // every time there is a DateTime it should be a string in the database
-            var mongoDbSettings = Configuration.GetSection(nameof(MongoDbSettings)).Get<MongoDbSettings>();
+            // var mongoDbSettings = Configuration.GetSection(nameof(MongoDbSettings)).Get<MongoDbSettings>();
+
+            var mongoDBUsername = Configuration.GetValue<String>("MongoDBUsername");
+            var mongoDBPassword = Configuration.GetValue<String>("MongoDBPassword");
+
+            var mongoDbSettings = new MongoDbSettings(mongoDBUsername, mongoDBPassword);
 
             services.AddSingleton<IMongoClient>(
                 serviceProvider =>
@@ -59,7 +65,7 @@ namespace Permify.Proto.WebApi
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
