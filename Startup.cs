@@ -40,11 +40,15 @@ namespace Permify.Proto.WebApi
                 serviceProvider =>
                 {
                     var settings = Configuration.GetSection(nameof(MongoDbSettings)).Get<MongoDbSettings>();
+                    Console.WriteLine(settings.ConnectionString);
                     return new MongoClient(settings.ConnectionString);
                 }
             );
             services.AddSingleton<IProtoRepository, MongoDbProtoRepository>();
-            services.AddControllers();
+            services.AddControllers(options =>
+            {
+                options.SuppressAsyncSuffixInActionNames = false;
+            });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Permify.Proto.WebApi", Version = "v1" });
