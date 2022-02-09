@@ -29,17 +29,6 @@ namespace Permify_Proto_WebApi.Controllers
             );
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<ProtoDto>> GetProto(Guid id)
-        {
-            var proto = await _protoRepository.GetProtoByIdAsync(id);
-            if (proto == null)
-            {
-                return NotFound();
-            }
-            return (await _protoRepository.GetProtoByIdAsync(id)).ToDto();
-        }
-
         [HttpPost("add-proto")]
         public ActionResult<ProtoDto> Post(CreateProtoDto protoDto)
         {
@@ -72,6 +61,19 @@ namespace Permify_Proto_WebApi.Controllers
             _protoRepository.AddProtosAsync(protos);
             return CreatedAtAction(nameof(GetProto), new { id = protos.First().Id }, protos.Select(proto => proto.ToDto()));
         }
+
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ProtoDto>> GetProto(Guid id)
+        {
+            var proto = await _protoRepository.GetProtoByIdAsync(id);
+            if (proto == null)
+            {
+                return NotFound();
+            }
+            return (await _protoRepository.GetProtoByIdAsync(id)).ToDto();
+        }
+
 
         [HttpPut("{id}")]
         public async Task<ActionResult<ProtoDto>> Put(Guid id, UpdateProtoDto protoDto)
